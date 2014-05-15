@@ -58,21 +58,12 @@ if (Meteor.isClient) {
     return Players.find({}, {sort: {computerName: 1}});
   };
 
-  function playerUpdateFromField(evt, id) {
-    var el = $(evt.target);
-    var field = el.attr('data-field');
-    var newVal = el.val();
-    var diff = {};
-    diff[field] = newVal;
-    playerUpdateById(id, diff);
-  }
-
   Template.player.events({
-    'change input.favoriteColor': function (evt) {
-      playerUpdateFromField(evt, this._id);
-    },
-    'blur input.entry': function(evt) {
-      playerUpdateFromField(evt, this._id);
+    'change input.favoriteColor, blur input.entry': function (evt) {
+      var el = $(evt.target);
+      var delta = {};
+      delta[el.attr('data-field')] = el.val();
+      playerUpdateById(this._id, delta);
     },
     'click input.seatUnlock': function(evt) {
       var id = $(evt.target).attr("data-id");
