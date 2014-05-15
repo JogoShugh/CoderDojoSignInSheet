@@ -75,6 +75,16 @@
       <td class="name"><img src="{{avatarURL}}" height='48' width='48' /></td>
     {{/if}}
   </tr>
+  {{#if seatUnlocked computerName}}  
+    <tr>
+      <td colspan="11">
+      {{#each apps}}
+        <div><textarea id="code">{{this}}</textarea> <button>Save</button> <button class="codeRun">Run</button></div>
+        <br />
+      {{/each}}
+      </td>
+    </tr>
+  {{/if}}
 </template>
 
 <template name="favoriteSubject">

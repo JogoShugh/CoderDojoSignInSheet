@@ -2,15 +2,16 @@ Players = new Meteor.Collection("players");
 
 function playerCreate(computerName, computerSecret) {
   return {
-    "computerName": computerName,
-    "computerSecret": computerSecret,
-    "firstName": "",
-    "lastName": "",
-    "gitHubUsername": "",
-    "grade": "",
-    "favoriteSubjects": ["?", "?", "?", "?", "?"],
-    "favoriteColor": "",
-    "avatarURL": "http://icons.iconarchive.com/icons/hopstarter/face-avatars/48/Male-Face-N5-icon.png"
+    computerName: computerName,
+    computerSecret: computerSecret,
+    firstName: "",
+    lastName: "",
+    gitHubUsername: "",
+    grade: "",
+    favoriteSubjects: ["?", "?", "?", "?", "?"],
+    favoriteColor: "",
+    avatarURL: "http://icons.iconarchive.com/icons/hopstarter/face-avatars/48/Male-Face-N5-icon.png",
+    apps: ["/* Put your app code here! */"]
   }
 }
 
@@ -91,6 +92,59 @@ if (Meteor.isClient) {
       var favoriteSubjects = getArrayValuesFor('#' + id + 'favoriteSubjects', '.favoriteSubject');
       var obj = {favoriteSubjects:favoriteSubjects};
       playerUpdateById(id, obj);
+    }, 
+    'click button.codeRun': function(evt) {
+      var code = $('#code').val();
+      var funScript = "var func = function(players, search, computerNames, firstNames, lastNames, grades, gitHubUsernames, favoriteSubjects, favoriteSubjectsFlat, favoriteColors, avatarURLs, apps) {" + code + "}";
+      console.log(funScript);
+      try {
+        eval(funScript);
+        var allPlayers = Players.find().fetch();
+        // Lets break it out into arrays for each property
+        var first = allPlayers[0];
+        var keys = _.keys(first);
+        var data = {};
+        _.each(keys, function(key) {
+          var vals = _.pluck(allPlayers, key);
+          console.log(key);
+          console.log(vals);
+          vals = _.reject(vals, function(item) {
+            return item === "";
+          });
+          if (key === 'favoriteSubjects') {
+            var newVals = [];
+            _.each(vals, function(subjs) {
+              var valids = _.reject(subjs, function(subj) {
+                return subj === '?';
+              });
+              newVals.unshift(valids);
+            });
+            vals = newVals;
+            // flatten
+            var flatSubjects = _.flatten(vals);
+            data['favoriteSubjectsFlat'] = flatSubjects;
+          }
+          data[key] = vals;
+        });
+        var search = function() {
+          var args = Array.prototype.slice.apply(arguments);
+          return Players.find.apply(Players, args);
+        }
+        func(Players.find().fetch(), search, 
+          data.computerName,
+          data.firstName,
+          data.lastName,
+          data.gitHubUsername,
+          data.grade,
+          data.favoriteSubjects,
+          data.favoriteSubjectsFlat,
+          data.favoriteColor,
+          data.avatarURL,
+          data.apps
+        );
+      } catch (ex) {
+        alert("Error trying to run your code!\n\n" + ex);
+      }
     }
   });
 
