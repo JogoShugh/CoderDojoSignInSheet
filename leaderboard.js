@@ -103,6 +103,13 @@ if (Meteor.isClient) {
     }
   });
 
+  function withIndex(array, indexDisplayOffset) {
+    return _.map(array, function(item, index) {
+      var indexDisplay = index + indexDisplayOffset;
+      return {index: index, indexDisplay: indexDisplay, val:item};
+    });
+  }
+
   Template.player.helpers({   
    'seatUnlocked': function(computerName) {
       return seatUnlocked(computerName);
@@ -110,14 +117,13 @@ if (Meteor.isClient) {
    'getVAlign': function(computerName) {
       return seatUnlocked(computerName) ? "top" : "middle";
     },
-    'withIndex': function(favoriteSubjects, modifier) {
-      var subjects = [];
-      for (var i = 0; i < favoriteSubjects.length; i++) {
-        var indexDisplay = i + modifier
-        subjects.push({index: i, indexDisplay:indexDisplay, val:favoriteSubjects[i]});
-      }
-      console.log(subjects);
-      return subjects;
+    'withIndex': function(array, indexDisplayOffset) {
+      return withIndex(array, indexDisplayOffset);
+    },
+    'excludeWhenMatch': function(array, matchValue) {
+      var newArray = withIndex(array, 1);
+      var rejected =_.reject(newArray, function(item) { return item.val === matchValue });
+      return rejected;
     }
   });
 }

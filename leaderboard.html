@@ -50,14 +50,14 @@
       <td class="name"><input class='entry' type='text' data-field="firstName" value="{{firstName}}" /></td>
       <td class="name"><input class='entry' type='text' data-field="lastName" value="{{lastName}}" /></td> 
       <td class="name"><input class='entry' type='text' data-field="gitHubUsername" value="{{gitHubUsername}}" /></td> 
-      <td class="name"><input class='entry' type='number' data-field="gitHubUsername" value="{{grade}}" /></td>
+      <td class="name"><input class='entry' type='number' data-field="grade" value="{{grade}}" /></td>
       <td class="name" id="{{_id}}favoriteSubjects">
         {{#each withIndex favoriteSubjects 1}}
           {{> favoriteSubject}}
         {{/each}}
       </td>
       <td class="name"><input class='favoriteColor' type='color' data-field="favoriteColor" value="{{favoriteColor}}" /></td>
-      <td class="name"><input class='entry' data-id="{{_id}}" type='text' value="{{avatarURL}}" /></td> 
+      <td class="name"><input class='entry' data-id="{{_id}}" type='text' data-field="avatarURL" value="{{avatarURL}}" /></td>
       <td class="name"><img src='{{avatarURL}}' height='48' width='48' /></td>
     {{else}}
       <td class="name"><input type="button" data-id="{{_id}}" class="seatUnlock" value="Unlock Seat" /></td>    
@@ -66,7 +66,7 @@
       <td class="name">{{gitHubUsername}}</td> 
       <td class="name">{{grade}}</td>
       <td class="name favoriteSubjects">
-        {{#each withIndex favoriteSubjects 1}}
+        {{#each excludeWhenMatch favoriteSubjects "?"}}
           {{> favoriteSubjectView}}
         {{/each}}
       </td>
