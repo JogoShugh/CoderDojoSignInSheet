@@ -1,8 +1,8 @@
 Players = new Meteor.Collection("players");
 
-var smileyBase = 'http://icons.iconarchive.com/icons/hopstarter/keriyo-emoticons/96/';
+smileyBase = 'http://icons.iconarchive.com/icons/hopstarter/keriyo-emoticons/96/';
 
-var smileys = [
+smileys = [
   "Smiley-icon.png",
   "Smiley-bored-icon.png",
   "Smiley-bored-2-icon.png",
@@ -39,12 +39,12 @@ var smileys = [
   "Smiley-zzz-icon.png"
 ];
 
-var grades = [];
+grades = [];
 for (var i = 1; i < 13; i++) {
   grades.push(i);
 };
 
-var colors = {
+colors = {
   PinksLights: [
     "Pink",
     "LightPink"
@@ -225,7 +225,7 @@ var colors = {
   ]
 };
 
-var colorsFlat = _.chain(colors).map(function(group) { return group; } ).flatten().value();
+colorsFlat = _.chain(colors).map(function(group) { return group; } ).flatten().value();
 
 function randomColor() {
   return _.sample(colorsFlat);
@@ -332,8 +332,8 @@ if (Meteor.isClient) {
       var val = evt.val;      
       playerUpdateById(this._id, {avatarURL: smileyBase + val});
     },
-    'change select.grade': function(evt) {
-      var val = evt.val;
+    'change select.grades': function(evt) {
+      var val = parseInt(evt.val);
       playerUpdateById(this._id, {grade: val});
     },
     'click button.codeRun': function(evt) {
@@ -445,13 +445,20 @@ if (Meteor.isClient) {
   });
 
   Template.gradeSelect.rendered = function() {
-    $(".grades").select2();
+    $(".grades").select2({
+      formatResult: function(val) { return "<strong>" + val.text + "</strong>"; },
+      formatSelection: function(val) { return "<strong><em>" + val.text + "</em></strong>"; },
+      escapeMarkup: function(m) { return m; }
+    });
   };
 
   Template.gradeSelect.helpers({
     'grades': function() {
       return grades;
-    }
+    },
+    'isSelected': function(grade, item) {
+      return grade === item ? 'selected' : ''; 
+    }    
   });
 
   Template.aceEditor.rendered = function() {

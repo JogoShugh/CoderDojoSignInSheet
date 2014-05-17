@@ -18,7 +18,7 @@ input[type="text"] {
     height: 25px;
 }
 
-a.select2-choice {
+.avatars a.select2-choice {
     width: 144px !important;
     height: 120px !important;
 }
@@ -26,6 +26,15 @@ a.select2-choice {
 .avatar {
     height: 96px !important;
     width: 96px !important;
+}
+
+.grades a.select2-choice {
+    width: 75px !important;
+}
+
+.player .gradeView {
+    font-weight: bold;
+    font-size: 40px !important;
 }
 
 .bigdrop.select2-container .select2-results {max-height: 120px;}

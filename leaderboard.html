@@ -54,6 +54,7 @@
         {{> avatarsSelect}}
       </td>
       <td class="name">
+        Grade:<br />
         {{> gradeSelect}}
       </td>
       <td class="name" id="{{_id}}favoriteSubjects">
@@ -111,7 +112,7 @@
       <td class="name">{{lastName}}</td> 
       <td class="name">{{gitHubUsername}}</td>
       <td class="name"><img src="{{avatarURL}}" height='96' width='96' /></td>
-      <td class="name">{{grade}}</td>
+      <td class="name gradeView">{{grade}}</td>
       <td class="name favoriteSubjects">
         {{#each excludeWhenMatch favoriteSubjects "?"}}
           {{> favoriteSubjectView}}
@@ -180,7 +181,7 @@
 </template>
 
 <template name="gradeSelect">
-  <select class="grade">
+  <select class="grades">
     {{#each grades}}
       <option value="{{this}}" {{isSelected ../grade this}} >{{this}}</option>
     {{/each}}
