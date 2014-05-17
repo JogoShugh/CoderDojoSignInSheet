@@ -1,18 +1,245 @@
 Players = new Meteor.Collection("players");
 
-function playerCreate(computerName, computerSecret) {
+var smileyBase = 'http://icons.iconarchive.com/icons/hopstarter/keriyo-emoticons/96/';
+
+var smileys = [
+  "Smiley-icon.png",
+  "Smiley-bored-icon.png",
+  "Smiley-bored-2-icon.png",
+  "Smiley-complain-icon.png",
+  "Smiley-complain-2-icon.png",
+  "Smiley-cool-icon.png",
+  "Smiley-disappointed-icon.png",
+  "Smiley-dollar-icon.png",
+  "Smiley-friendly-icon.png",
+  "Smiley-glad-icon.png",
+  "Smiley-grumpy-icon.png",
+  "Smiley-grumpy-2-icon.png",
+  "Smiley-guilty-icon.png",
+  "Smiley-laugh-icon.png",
+  "Smiley-love-icon.png",
+  "Smiley-pleased-icon.png",
+  "Smiley-reflective-icon.png",
+  "Smiley-rofl-icon.png",
+  "Smiley-sad-icon.png",
+  "Smiley-scared-icon.png",
+  "Smiley-scared-2-icon.png",
+  "Smiley-sleep-icon.png",
+  "Smiley-sorry-icon.png    ",
+  "Smiley-stick-tongue-icon.png",
+  "Smiley-surprised-icon.png",
+  "Smiley-surprised-2-icon.png",
+  "Smiley-teards-icon.png",
+  "Smiley-unfortunate-icon.png",
+  "Smiley-untroubled-icon.png",
+  "Smiley-upset-icon.png",
+  "Smiley-upset-2-icon.png    ",
+  "Smiley-upset-3-icon.png",
+  "Smiley-upset-4-icon.png",
+  "Smiley-zzz-icon.png"
+];
+
+var grades = [];
+for (var i = 1; i < 13; i++) {
+  grades.push(i);
+};
+
+var colors = {
+  PinksLights: [
+    "Pink",
+    "LightPink"
+  ],
+  PinkDarks: [
+    "HotPink",
+    "DeepPink",
+    "PaleVioletRed",
+    "MediumVioletRed",
+  ],
+  RedLights: [
+    "LightSalmon",
+    "Salmon",
+    "DarkSalmon",
+    "LightCoral"
+  ],
+  RedDarks: [
+    "IndianRed",
+    "Crimson",
+    "FireBrick",
+    "DarkRed",
+    "Red"
+  ],
+  OrangeDarks: [  
+    "Orange",
+    "Tomato",
+    "Coral",
+    "DarkOrange",
+    "Orange"
+  ],
+  YellowDarks: [
+    "Yellow",
+    "LightYellow",
+    "LemonChiffon",
+    "LightGoldenrodYellow",
+    "PapayaWhip",
+    "Moccasin",
+    "PeachPuff",
+    "PaleGoldenrod",
+    "Khaki",
+    "DarkKhaki",
+    "Gold"
+  ],
+  BrownDarks: [
+    "CornSilk",
+    "BlanchedAlmond",
+    "Bisque",
+    "NavajoWhite",
+    "Wheat",
+    "BurlyWood",
+    "Tan",
+    "RosyBrown",
+    "SandyBrown",
+    "Goldenrod"
+  ],
+  BrownLights: [
+    "DarkGoldenrod",
+    "Peru",
+    "Chocolate",
+    "SaddleBrown",
+    "Sienna",
+    "Brown",
+    "Maroon"
+  ],
+  GreenDarks: [
+    "DarkOliveGreen",
+    "Olive",
+    "OliveDrab",
+    "MediumSeaGreen",
+    "SeaGreen",
+    "ForestGreen",
+    "Green",
+    "DarkGreen"
+  ],
+  GreenLights: [
+    "YellowGreen",
+    "LimeGreen",
+    "Lime",
+    "LawnGreen",
+    "Chartreuse",
+    "GreenYellow",
+    "SpringGreen",
+    "MediumSpringGreen",
+    "LightGreen",
+    "PaleGreen",
+    "DarkSeaGreen"
+  ],
+  CyanLights: [
+    "MediumAquamarine",   
+    "Aqua",
+    "Cyan",
+    "LightCyan",
+    "PaleTurquoise",
+    "Aquamarine",
+    "Turquoise",
+    "MediumTurquoise"
+  ],
+  CyanDarks: [
+    "DarkTurquoise",
+    "LightSeaGreen",
+    "CadetBlue",
+    "DarkCyan",
+    "Teal"
+  ], 
+  BlueLights: [
+    "LightSteelBlue",
+    "PowderBlue",
+    "LightBlue",
+    "SkyBlue",
+    "LightSkyBlue"
+  ],
+  BlueDarks: [
+    "DeepSkyBlue",
+    "DodgerBlue",
+    "CornflowerBlue",
+    "SteelBlue",
+    "RoyalBlue",
+    "Blue",
+    "MediumBlue",
+    "DarkBlue",
+    "Navy",
+    "MidnightBlue"
+  ],
+  PurpleLights: [
+    "Lavender",
+    "Thistle",
+    "Plum",
+    "Violet",
+    "Orchid"
+  ],
+  PurpleDarks: [  
+    "Fuchsia",
+    "Magenta",
+    "MediumOrchid",
+    "MediumPurple",
+    "BlueViolet",
+    "DarkViolet",
+    "DarkOrchid",
+    "DarkMagenta",
+    "Purple",
+    "Indigo",
+    "DarkSlateBlue",
+    "SlateBlue",
+    "MediumSlateBlue"
+  ],
+  WhiteLights: [
+    "White",
+    "Snow",
+    "Honeydew",
+    "MintCream",
+    "Azure",
+    "AliceBlue",
+    "GhostWhite",
+    "WhiteSmoke",
+    "Seashell",
+    "Beige",
+    "OldLace",
+    "FloralWhite",
+    "Ivory",
+    "AntiqueWhite",
+    "Linen",
+    "LavenderBlush",
+    "MistyRose" 
+  ],
+  GrayBlackLights: [
+    "Gainsboro",
+    "LightGray",
+    "Silver",
+    "DarkGray",
+    "Gray"
+  ],
+  GrayBlackDarks: [
+    "DimGray",
+    "LightSlateGray",
+    "SlateGray",
+    "DarkSlateGray",
+    "Black"
+  ]
+};
+
+var colorsFlat = _.chain(colors).map(function(group) { return group; } ).flatten().value();
+
+function randomColor() {
+  return _.sample(colorsFlat);
+}
+
+function randomColorPairing() {
+  var colorGroup = _.sample(_.keys(colors));
+  var textColor = "White";
+  if (colorGroup.indexOf("Lights") > -1) textColor = "Black";
+  var backgroundColor = _.sample(colors[colorGroup]);
   return {
-    computerName: computerName,
-    computerSecret: computerSecret,
-    firstName: "",
-    lastName: "",
-    gitHubUsername: "",
-    grade: "",
-    favoriteSubjects: ["?", "?", "?", "?", "?"],
-    favoriteColor: "",
-    avatarURL: "http://icons.iconarchive.com/icons/hopstarter/face-avatars/48/Male-Face-N5-icon.png",
-    apps: ["/* Put your app code here! */"]
-  }
+    backgroundColor: backgroundColor,
+    textColor: textColor
+  };
 }
 
 function playerUpdate(obj) {
@@ -60,7 +287,7 @@ if (Meteor.isClient) {
   };
 
   Template.player.events({
-    'change input.favoriteColor, blur input.entry': function (evt) {
+    'change input.color, blur input.entry': function (evt) {
       var el = $(evt.target);
       var delta = {};
       delta[el.attr('data-field')] = el.val();
@@ -72,7 +299,7 @@ if (Meteor.isClient) {
       var computerSecret = $("#" + id + "computerSecret").val();
       Meteor.call('seatUnlock', computerName, computerSecret, function(err, res) {
         if (err) {
-          console.log("Error!");
+          alert("Error! See the console for more information. (F12 brings up the console in most browsers)");
           console.log(err);
         }
         if (res.success) {
@@ -92,11 +319,27 @@ if (Meteor.isClient) {
       var favoriteSubjects = getArrayValuesFor('#' + id + 'favoriteSubjects', '.favoriteSubject');
       var obj = {favoriteSubjects:favoriteSubjects};
       playerUpdateById(id, obj);
-    }, 
+    },
+    'click input.homeDevices' : function(evt, t) {
+      var el = $($(evt.target)[0]);      
+      var field = el.attr('data-field');      
+      var isChecked = evt.target.checked;
+      var delta = {};
+      delta[field] = isChecked;
+      playerUpdateById(this._id, delta);
+    },
+    'change select.avatars': function(evt) {
+      var val = evt.val;      
+      playerUpdateById(this._id, {avatarURL: smileyBase + val});
+    },
+    'change select.grade': function(evt) {
+      var val = evt.val;
+      playerUpdateById(this._id, {grade: val});
+    },
     'click button.codeRun': function(evt) {
-      var code = $('#code').val();
-      var funScript = "var func = function(players, search, computerNames, firstNames, lastNames, grades, gitHubUsernames, favoriteSubjects, favoriteSubjectsFlat, favoriteColors, avatarURLs, apps) {" + code + "}";
-      console.log(funScript);
+      var editor = ace.edit("editor");
+      var code = editor.getSession().getValue();
+      var funScript = "var func = function(players, search, computerNames, firstNames, lastNames, grades, gitHubUsernames, favoriteSubjects, favoriteSubjectsFlat, favoriteColors, backgroundColors, textColors, avatarURLs, apps) {" + code + "}";
       try {
         eval(funScript);
         var allPlayers = Players.find().fetch();
@@ -106,8 +349,6 @@ if (Meteor.isClient) {
         var data = {};
         _.each(keys, function(key) {
           var vals = _.pluck(allPlayers, key);
-          console.log(key);
-          console.log(vals);
           vals = _.reject(vals, function(item) {
             return item === "";
           });
@@ -139,6 +380,8 @@ if (Meteor.isClient) {
           data.favoriteSubjects,
           data.favoriteSubjectsFlat,
           data.favoriteColor,
+          data.backgroundColor,
+          data.textColor,
           data.avatarURL,
           data.apps
         );
@@ -155,11 +398,15 @@ if (Meteor.isClient) {
     });
   }
 
+  function formatAvatar(url) {
+    return "<img class='avatar' src='http://icons.iconarchive.com/icons/hopstarter/keriyo-emoticons/96/" + url.text + "' />"
+  }
+
   Template.player.helpers({   
-   'seatUnlocked': function(computerName) {
+    'seatUnlocked': function(computerName) {
       return seatUnlocked(computerName);
     },
-   'getVAlign': function(computerName) {
+    'getVAlign': function(computerName) {
       return seatUnlocked(computerName) ? "top" : "middle";
     },
     'withIndex': function(array, indexDisplayOffset) {
@@ -169,13 +416,65 @@ if (Meteor.isClient) {
       var newArray = withIndex(array, 1);
       var rejected =_.reject(newArray, function(item) { return item.val === matchValue });
       return rejected;
+    },
+    'checked': function(boolValue) {
+      return boolValue ? 'checked' : '';
+    },
+    'altWhenMatch': function(value, matchValue, alt) {
+      return value === matchValue ? alt : value;
     }
   });
+
+  Template.avatarsSelect.rendered = function() {
+    $(".avatars").select2({
+      dropdownCssClass: 'bigrop',
+      minimumResultsForSearch: -1,
+      formatResult: formatAvatar,
+      formatSelection: formatAvatar,
+      escapeMarkup: function(m) { return m; }
+    });
+  };
+
+  Template.avatarsSelect.helpers({
+    'avatars': function() {
+      return smileys;
+    },
+    'isSelected': function(avatarURL, item) {
+      return avatarURL !== "" && avatarURL.indexOf(item) > -1  ? 'selected' : '';   
+    }
+  });
+
+  Template.gradeSelect.rendered = function() {
+    $(".grades").select2();
+  };
+
+  Template.gradeSelect.helpers({
+    'grades': function() {
+      return grades;
+    }
+  });
+
+  Template.aceEditor.rendered = function() {
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.setHighlightActiveLine(true);
+  };
 }
 
 // On server startup, create some players if the database is empty.
 if (Meteor.isServer) {
+  var colorToHex = Meteor.require("colornames");
+  var toHex = function(colorName) {
+    return colorToHex(colorName.toLowerCase());
+  }
   Meteor.startup(function () {
+    ServiceConfiguration.configurations.remove();
+    ServiceConfiguration.configurations.insert({
+      service: "github",
+      clientId: "779f74f814ff4550a285",
+      secret: "17b871b227e6452610f153e88e6006a59e4869f1"
+    });
     Meteor.methods({
       'seatUnlock': function(computerName, computerSecret) {
         var player = Players.findOne({computerName:computerName, computerSecret: computerSecret});
@@ -210,7 +509,38 @@ if (Meteor.isServer) {
                  "Scheme",
                  "Squeak"
                  ];
-    names = names.sort();                 
+    names = names.sort();  
+
+    function playerCreate(computerName, computerSecret) {
+      var favoriteColor = randomColor();
+      var rowColors = randomColorPairing();
+      return {
+        computerName: computerName,
+        computerSecret: computerSecret,
+        firstName: "",
+        lastName: "",
+        gitHubUsername: "",
+        grade: "",
+        favoriteSubjects: ["?", "?", "?", "?", "?"],
+        favoriteColor: favoriteColor,
+        favoriteColorHex: toHex(favoriteColor),
+        backgroundColor: rowColors.backgroundColor,
+        backgroundColorHex : toHex(rowColors.backgroundColor),
+        textColor: rowColors.textColor,
+        textColorHex: toHex(rowColors.textColor),
+        avatarURL: smileyBase + _.sample(smileys),
+        hasComputer: false,
+        hasInternet: false,
+        hasAndroidPhone: false,
+        hasIPhone: false,
+        hasOtherSmartPhone: false,
+        hasTablet: false,
+        hasTV: false,
+        hasVideoGameConsole: false,
+        apps: ["/* Put your app code here! */"]
+      }
+    }
+
     for (var i = 0; i < names.length; i++) {
       Players.insert(playerCreate(names[i], names[i]));
     }

@@ -11,7 +11,7 @@
 
 <template name="players">
   <div class="players">
-    <table border="1">
+    <table class="signInSheet" border="1">
       <tr>
         <th>Computer Name</th>
         <th>Computer Secret</th>
@@ -19,11 +19,11 @@
         <th>First Name</th>
         <th>Last Name</th>
         <th>GitHub Username</th>
+        <th>Avatar</th>        
         <th>Grade</th>
         <th>Favorite Subjects</th>
-        <th>Favorite Color</th>        
-        <th>Avatar URL</th>
-        <th>Avatar</th>
+        <th>Colors</th>
+        <th>Home Devices</th>
       </tr>      
       {{#each players}}
         {{> player}}
@@ -42,45 +42,129 @@
 </template>
 
 <template name="player">
-  <tr class="player {{selected}}" style="background-color: {{favoriteColor}}" valign="{{getVAlign computerName}}">
+  <tr class="player {{selected}}" style="background-color: {{backgroundColor}}; color: {{textColor}};" valign="{{getVAlign computerName}}">
     <td class="name" style="background-color: white"><span id="{{_id}}computerName">{{computerName}}</span></td>
-    <td class="name"><input class='entry' type='password' id='{{_id}}computerSecret' value="{{computerSecret}}" /></td>    
+    <td class="name"><input class='entry' type='password' id='{{_id}}computerSecret' value="{{computerSecret}}" /></td>
     {{#if seatUnlocked computerName}}
       <td class="name"><input type="button" class="seatUnlock seatUnlocked" value="Unlocked!" /></td>
-      <td class="name"><input class='entry' type='text' data-field="firstName" value="{{firstName}}" /></td>
-      <td class="name"><input class='entry' type='text' data-field="lastName" value="{{lastName}}" /></td> 
-      <td class="name"><input class='entry' type='text' data-field="gitHubUsername" value="{{gitHubUsername}}" /></td> 
-      <td class="name"><input class='entry' type='number' data-field="grade" value="{{grade}}" /></td>
+      <td class="name"><input class='entry' type='text' placeholder="First Name" data-field="firstName" value="{{firstName}}" /></td>
+      <td class="name"><input class='entry' type='text' placeholder="Last Name" data-field="lastName" value="{{lastName}}" /></td> 
+      <td class="name"><input class='entry' type='text' placeholder="GitHub Username" data-field="gitHubUsername" value="{{gitHubUsername}}" /></td>
+      <td class="name">
+        {{> avatarsSelect}}
+      </td>
+      <td class="name">
+        {{> gradeSelect}}
+      </td>
       <td class="name" id="{{_id}}favoriteSubjects">
         {{#each withIndex favoriteSubjects 1}}
           {{> favoriteSubject}}
         {{/each}}
       </td>
-      <td class="name"><input class='favoriteColor' type='color' data-field="favoriteColor" value="{{favoriteColor}}" /></td>
-      <td class="name"><input class='entry' data-id="{{_id}}" type='text' data-field="avatarURL" value="{{avatarURL}}" /></td>
-      <td class="name"><img src='{{avatarURL}}' height='48' width='48' /></td>
+      <td class="name colors" style="background-color: {{favoriteColor}};">
+        <div>Your favorite:<br /><input class='color' type='color' data-field="favoriteColor" value="{{favoriteColorHex}}" /></div>
+        <div>Background:<br /><input class='color' type='color' data-field="backgroundColor" value="{{backgroundColorHex}}" /></div>
+        <div>Text:<br /><input class='color' type='color' data-field="textColor" value="{{textColorHex}}" /></div>
+      </td>
+      <td class="name">
+        <strong>Do you have these at home?</strong>
+        <div style="text-align: left">
+          <table class='homeDevicesTable'>
+            <tr>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/Computer-icon.png" title="Computer" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasComputer" {{checked hasComputer}} />&nbsp;Computer
+              </td>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/32/Devices-network-wireless-connected-100-icon.png" title="Internet Connection" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasInternet" {{checked hasInternet}} />&nbsp;Internet Connection
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/iconshock/real-vista-mobile/32/android-platform-icon.png" title="Android Phone" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasAndroidPhone" {{checked hasAndroidPhone}} />&nbsp;Android Phone
+              </td>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/tatice/operating-systems/32/Apple-Blue-icon.png" title="Apple iPhone" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasIPhone" {{checked hasIPhone}} />&nbsp;Apple iPhone
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/Smartphone-icon.png" title="Other SmartPhone" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasOtherSmartPhone" {{checked hasOtherSmartPhone}} />&nbsp;Other SmartPhone
+              </td>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/fasticon/comic-ipad/32/iPad-happy-icon.png" title="Tablet" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasTablet" {{checked hasTablet}} />&nbsp;Tablet
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/TV-Set-Retro-icon.png" title="TV" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasTV" {{checked hasTV}} />&nbsp;TV
+              </td>
+              <td>
+                <img src="http://icons.iconarchive.com/icons/multivitamin/multiminimal/32/gamepad-icon.png" title="Video Game Console" />&nbsp;<input class='homeDevices' type='checkbox' data-field="hasVideoGameConsole" {{checked hasVideoGameConsole}} />&nbsp;Video Game Console
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
     {{else}}
       <td class="name"><input type="button" data-id="{{_id}}" class="seatUnlock" value="Unlock Seat" /></td>    
       <td class="name">{{firstName}}</td>
       <td class="name">{{lastName}}</td> 
-      <td class="name">{{gitHubUsername}}</td> 
+      <td class="name">{{gitHubUsername}}</td>
+      <td class="name"><img src="{{avatarURL}}" height='96' width='96' /></td>
       <td class="name">{{grade}}</td>
       <td class="name favoriteSubjects">
         {{#each excludeWhenMatch favoriteSubjects "?"}}
           {{> favoriteSubjectView}}
         {{/each}}
       </td>
-      <td class="name">{{favoriteColor}}</td>
-      <td class="name">&nbsp;</td>      
-      <td class="name"><img src="{{avatarURL}}" height='48' width='48' /></td>
+      <td class="name colors" style="background-color: {{favoriteColor}};">
+        <div>Favorite:<br /><span style="background-color: white; color: {{favoriteColor}};">{{altWhenMatch favoriteColor '' '?'}}</span></div>
+        <div>Background:<br /><span style="background-color: {{backgroundColor}}">{{altWhenMatch backgroundColor '' '?'}}</span></div>
+        <div>Text:<br /><span style="background-color: gray; color: {{textColor}}">{{altWhenMatch textColor '' '?'}}</span></div>
+      </td>
+      <td class="name">
+        <div>
+          {{#if hasComputer}}
+            <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/Computer-icon.png" title="Computer" />&nbsp;
+
+          {{/if}}
+          {{#if hasInternet}}
+            <img src="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/32/Devices-network-wireless-connected-100-icon.png" title="Internet Connection" />&nbsp;
+
+          {{/if}}
+          {{#if hasAndroidPhone}}
+            <img src="http://icons.iconarchive.com/icons/iconshock/real-vista-mobile/32/android-platform-icon.png" title="Android Phone" />&nbsp;
+
+          {{/if}}
+          {{#if hasIPhone}}
+            <img src="http://icons.iconarchive.com/icons/tatice/operating-systems/32/Apple-Blue-icon.png" title="Apple iPhone" />&nbsp;
+
+          {{/if}}
+          {{#if hasOtherSmartPhone}}
+            <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/Smartphone-icon.png" title="Other SmartPhone" />&nbsp;
+
+          {{/if}}
+          {{#if hasTablet}}
+            <img src="http://icons.iconarchive.com/icons/fasticon/comic-ipad/32/iPad-happy-icon.png" title="Tablet" />&nbsp;
+
+          {{/if}}
+          {{#if hasTV}}
+            <img src="http://icons.iconarchive.com/icons/icons-land/vista-hardware-devices/32/TV-Set-Retro-icon.png" title="TV" />&nbsp;
+
+          {{/if}}
+          {{#if hasVideoGameConsole}}
+            <img src="http://icons.iconarchive.com/icons/multivitamin/multiminimal/32/gamepad-icon.png" title="Video Game Console" />&nbsp;
+
+          {{/if}}
+        </div>
+      </td>      
     {{/if}}
   </tr>
   {{#if seatUnlocked computerName}}  
     <tr>
-      <td colspan="11">
+      <td colspan="11" class="editor">
       {{#each apps}}
-        <div><textarea id="code">{{this}}</textarea> <button>Save</button> <button class="codeRun">Run</button></div>
-        <br />
+        {{> aceEditor}}
       {{/each}}
       </td>
     </tr>
@@ -93,4 +177,25 @@
 
 <template name="favoriteSubjectView">
   &nbsp;<strong>#{{this.indexDisplay}}</strong> {{this.val}}<br />
+</template>
+
+<template name="gradeSelect">
+  <select class="grade">
+    {{#each grades}}
+      <option value="{{this}}" {{isSelected ../grade this}} >{{this}}</option>
+    {{/each}}
+  </select>
+</template>
+
+<template name="avatarsSelect">
+  <select class="avatars">
+    {{#each avatars}}
+      <option value="{{this}}" {{isSelected ../avatarURL this}} >{{this}}</option>
+    {{/each}}
+  </select>
+</template>
+
+<template name="aceEditor">
+  <div id='editor'>{{this}}</div>
+  <button>Save</button> <button class="codeRun">Run</button>
 </template>
