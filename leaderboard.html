@@ -1,9 +1,14 @@
 <head>
-  <title>Beginning JavaScript</title>
+  <title>CoderDojo Ponce Springs & Mental Fitness: Dive Into Coding!</title>
 </head>
 
 <body>
-  {{> loginButtons}}
+  <div style="text-align:center; font-size: 150%">
+    Welcome!<br />
+    <a href="http://www.github.com" target="_blank">Step One: Click here to create a new GitHub account if you don't have one.</a>
+    <br />
+    Step Two: Introduce yourself below!<br />
+    </div>
   <div id="outer">
     {{> players}}
   </div>
@@ -15,7 +20,6 @@
       <tr>
         <th>Computer Name</th>
         <th>Computer Secret</th>
-        <th></th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>GitHub Username</th>
@@ -30,23 +34,20 @@
       {{/each}}
     </table>
   </div>
-
-  {{#if selectedName}}
-  <div class="details">
-    <div class="name">{{selectedName}}</div>
-    <input type="button" class="inc" value="Give 5 points" />
-  </div>
-  {{else}}
-  <div class="none">Click a player to select</div>
-  {{/if}}
 </template>
 
 <template name="player">
   <tr class="player {{selected}}" style="background-color: {{backgroundColor}}; color: {{textColor}};" valign="{{getVAlign computerName}}">
-    <td class="name" style="background-color: white"><span id="{{_id}}computerName">{{computerName}}</span></td>
-    <td class="name"><input class='entry' type='password' id='{{_id}}computerSecret' value="{{computerSecret}}" /></td>
-    {{#if seatUnlocked computerName}}
-      <td class="name"><input type="button" class="seatUnlock seatUnlocked" value="Unlocked!" /></td>
+    <td class="name" style="background-color: goldenrod; color:black; font-weight: bold;"><span id="{{_id}}computerName">{{computerName}}</span></td>
+    <td class="name"><input class='entry' type='password' id='{{_id}}computerSecret' value="{{computerSecret}}" />
+      <br />
+      {{#if seatUnlocked computerName}}
+        <input type="button" class="seatUnlock seatUnlocked" value="Unlocked!" />
+      {{else}}
+        <input type="button" data-id="{{_id}}" class="seatUnlock" value="Unlock Seat" />
+      {{/if}}
+    </td>
+    {{#if seatUnlocked computerName}}      
       <td class="name"><input class='entry' type='text' placeholder="First Name" data-field="firstName" value="{{firstName}}" /></td>
       <td class="name"><input class='entry' type='text' placeholder="Last Name" data-field="lastName" value="{{lastName}}" /></td> 
       <td class="name"><input class='entry' type='text' placeholder="GitHub Username" data-field="gitHubUsername" value="{{gitHubUsername}}" /></td>
@@ -63,9 +64,9 @@
         {{/each}}
       </td>
       <td class="name colors" style="background-color: {{favoriteColor}};">
-        <div>Your favorite:<br /><input class='color' type='color' data-field="favoriteColor" value="{{favoriteColorHex}}" /></div>
-        <div>Background:<br /><input class='color' type='color' data-field="backgroundColor" value="{{backgroundColorHex}}" /></div>
-        <div>Text:<br /><input class='color' type='color' data-field="textColor" value="{{textColorHex}}" /></div>
+        <div><span class='colorLabel'>Favorite: {{altWhenMatch favoriteColor '' '?'}}</span><br /><input class='color' type='color' data-field="favoriteColor" value="{{favoriteColorHex}}" /></div>
+        <div><span class='colorLabel'>Background: {{altWhenMatch backgroundColor '' '?'}}</span><br /><input class='color' type='color' data-field="backgroundColor" value="{{backgroundColorHex}}" /></div>
+        <div><span class='colorLabel'>Text: {{altWhenMatch textColor '' '?'}}</span><br /><input class='color' type='color' data-field="textColor" value="{{textColorHex}}" /></div>
       </td>
       <td class="name">
         <strong>Do you have these at home?</strong>
@@ -107,7 +108,6 @@
         </div>
       </td>
     {{else}}
-      <td class="name"><input type="button" data-id="{{_id}}" class="seatUnlock" value="Unlock Seat" /></td>    
       <td class="name">{{firstName}}</td>
       <td class="name">{{lastName}}</td> 
       <td class="name">{{gitHubUsername}}</td>
@@ -119,9 +119,9 @@
         {{/each}}
       </td>
       <td class="name colors" style="background-color: {{favoriteColor}};">
-        <div>Favorite:<br /><span style="background-color: white; color: {{favoriteColor}};">{{altWhenMatch favoriteColor '' '?'}}</span></div>
-        <div>Background:<br /><span style="background-color: {{backgroundColor}}">{{altWhenMatch backgroundColor '' '?'}}</span></div>
-        <div>Text:<br /><span style="background-color: gray; color: {{textColor}}">{{altWhenMatch textColor '' '?'}}</span></div>
+        <div class="color"><span class='colorBlock' style="background-color: {{favoriteColor}};"><span class='colorLabel'>Favorite: {{altWhenMatch favoriteColor '' '?'}}</span></span></div><br />
+        <div class="color"><span class='colorBlock' style="background-color: {{backgroundColor}}"><span class='colorLabel'>Background: {{altWhenMatch backgroundColor '' '?'}}</span></span></div><br />
+        <div class="color"><span class='colorBlock' style="background-color: {{textColor}}"><span class='colorLabel'>Text: {{altWhenMatch textColor '' '?'}}</span></span></div>
       </td>
       <td class="name">
         <div>
@@ -189,11 +189,15 @@
 </template>
 
 <template name="avatarsSelect">
+  Pick a smiley image:<br />
   <select class="avatars">
     {{#each avatars}}
-      <option value="{{this}}" {{isSelected ../avatarURL this}} >{{this}}</option>
-    {{/each}}
+      <option value="{{this}}" {{isSelected ../avatarURL this}}>{{this}}</option>
+    {{/each}} 
   </select>
+  <br />
+  Or, type an image URL:<br />
+  <input type="text" class="avatarCustom" placeholder="Custom image URL" />
 </template>
 
 <template name="aceEditor">

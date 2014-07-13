@@ -3,11 +3,6 @@ body {
     font-weight: 100;
     margin: 50px 0;
     padding: 0;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
 }
 
 input[type="color"] {
@@ -47,6 +42,8 @@ input[type="text"] {
 .players table th {
     padding: .5em;
     background: goldenrod;
+    text-align: center;
+    font-weight: bold;
 }
 
 .players table td {
@@ -87,11 +84,8 @@ input[type="text"] {
 }
 
 .player {
-    cursor: pointer;
-}
-
-.player .name {
-    font-size: 1.00em;
+    background: lightgreen;
+    border: 2px inset darkgreen;
 }
 
 .player .score {
@@ -111,32 +105,27 @@ input[type="text"] {
     color: black;
 }
 
-.colors {
+.players table td.colors {
     font-weight: bold;
+    padding: 1em;
 }
 
-.colors span {
+.players table td.colors .color {
+    padding: .5em;
+    margin-top: .5em;    
+}
+
+.players table td.colors .colorBlock {
+    padding: 1em;
+    border: 2px outset darkgray;
+}
+
+.players table td.colors .colorLabel {
     padding: .2em;
-    margin-top: .4em;
-    border: 1px outset darkgray;
-}
-
-.details, .none {
-    font-weight: bold;
-    font-size: 2em;
-    border-style: dashed none none none;
-    border-color: #ccc;
-    border-width: 4px;
-    margin: 50px 10px;
-    padding: 10px 0px;
-}
-
-.none {
-    color: #777;
-}
-
-.inc {
-  cursor: pointer;
+    font-size: 90%;
+    border: 1px solid gray;
+    color: black;
+    background-color: Yellow;
 }
 
 #editor {
@@ -145,4 +134,3 @@ input[type="text"] {
     text-align: left;
     font-size: 125%;
 }
-

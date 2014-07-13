@@ -1,5 +1,7 @@
 Players = new Meteor.Collection("players");
 
+avatarAsleep = "http://i.imgur.com/acGhf9A.png";
+
 smileyBase = 'http://icons.iconarchive.com/icons/hopstarter/keriyo-emoticons/96/';
 
 smileys = [
@@ -283,7 +285,7 @@ if (Meteor.isClient) {
   });
 
   Template.players.players = function () {
-    return Players.find({}, {sort: {computerName: 1}});
+    return Players.find({}, {sort: {computerName: 1}, fields: { 'computerSecret' : 0}});
   };
 
   Template.player.events({
@@ -388,6 +390,17 @@ if (Meteor.isClient) {
       } catch (ex) {
         alert("Error trying to run your code!\n\n" + ex);
       }
+    },
+    'blur input.avatarCustom': function(evt) {
+      var el = $($(evt.target)[0]);
+      if (el.val() === null || el.val() === "") {
+        return;
+      }
+      var url = el.val();
+      playerUpdateById(this._id, {avatarURL: url});
+    },
+    'click button.avatarCustom': function(evt) {
+
     }
   });
 
@@ -471,9 +484,9 @@ if (Meteor.isClient) {
 
 // On server startup, create some players if the database is empty.
 if (Meteor.isServer) {
-  var colorToHex = Meteor.require("colornames");
+  var colorToHex = Meteor.require("css-color-names");
   var toHex = function(colorName) {
-    return colorToHex(colorName.toLowerCase());
+    return colorToHex[colorName.toLowerCase()];
   }
   Meteor.startup(function () {
     ServiceConfiguration.configurations.remove();
@@ -484,7 +497,7 @@ if (Meteor.isServer) {
     });
     Meteor.methods({
       'seatUnlock': function(computerName, computerSecret) {
-        var player = Players.findOne({computerName:computerName, computerSecret: computerSecret});
+        var player = Players.findOne({computerName:computerName, computerSecret: parseInt(computerSecret)});
         if (player) {
           return { success: true, message: '' };
         } else {
@@ -494,36 +507,43 @@ if (Meteor.isServer) {
     });
     var basic = Players.findOne({computerName:"BASIC"});
     if (basic) {
-      return;
+      return; 
     }
-    var names = ["F#",
-                 "C++",
-                 "C",
-                 "D",
-                 "C#",
-                 "Python",                 
-                 "Java",
-                 "JavaScript",
-                 "Haskell",
-                 "Clojure",
-                 "PERL",
-                 "PHP",
-                 "Scala",
-                 "CoffeeScript",
-                 "BASIC",
-                 "LISP",
-                 "Ruby",
-                 "Scheme",
-                 "Squeak"
-                 ];
-    names = names.sort();  
 
-    function playerCreate(computerName, computerSecret) {
-      var favoriteColor = randomColor();
-      var rowColors = randomColorPairing();
+    var computerSecrets = {
+      'Clojure' : 91234,
+      'Python'  : 12345,
+      'Java'    : 67891,
+      'Ruby'    : 23456,
+      'F#'      : 89123,
+      'C'       : 45678,
+      'Dart'    : 43798,
+      'Scala'   : 13579,
+      'BASIC'   : 56789,
+      'Pascal'  : 56239,
+      'Haskell' : 74183,
+      'PERL'    : 24681,
+      'JavaScript'   : 92536,
+      'CoffeeScript' : 34567,
+      'ObjectiveC'   : 78912,
+      'Elixir': 98765
+    };
+
+    var names = _.keys(computerSecrets);
+
+    console.log(names);
+
+    names = names.sort();    
+
+    var iter = 0;
+
+    function playerCreate(computerName) {
+      var favoriteColor = iter % 2 == 0 ? 'LightGray' : 'White';
+      var backgroundColor = iter % 2 == 0 ? 'White' : 'LightGray';
+      iter++;
       return {
         computerName: computerName,
-        computerSecret: computerSecret,
+        computerSecret: computerSecrets[computerName],
         firstName: "",
         lastName: "",
         gitHubUsername: "",
@@ -531,11 +551,11 @@ if (Meteor.isServer) {
         favoriteSubjects: ["?", "?", "?", "?", "?"],
         favoriteColor: favoriteColor,
         favoriteColorHex: toHex(favoriteColor),
-        backgroundColor: rowColors.backgroundColor,
-        backgroundColorHex : toHex(rowColors.backgroundColor),
-        textColor: rowColors.textColor,
-        textColorHex: toHex(rowColors.textColor),
-        avatarURL: smileyBase + _.sample(smileys),
+        backgroundColor: backgroundColor,
+        backgroundColorHex : toHex(backgroundColor),
+        textColor: 'Black',
+        textColorHex: toHex('Black'),
+        avatarURL: avatarAsleep,
         hasComputer: false,
         hasInternet: false,
         hasAndroidPhone: false,
@@ -549,7 +569,7 @@ if (Meteor.isServer) {
     }
 
     for (var i = 0; i < names.length; i++) {
-      Players.insert(playerCreate(names[i], names[i]));
+      Players.insert(playerCreate(names[i]));
     }
   });
 }
